@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب مقطع الناقل</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        .input-group-text {
+            background-color: #e9ecef;
+        }
+        .btn-calculate {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: 600;
+        }
+        .btn-reset {
+            background-color: #6c757d;
+            color: white;
+            font-weight: 600;
+        }
+        .result-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar bg-body-tertiary shadow-sm">
+        <div class="container">
+            <h2 class="navbar-brand">حساب مقطع الناقل</h2>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 class="text-center mb-4">حساب مقطع الناقل</h2>
+
+                <!-- Load Input -->
+                <div class="mb-3">
+                    <label for="load" class="form-label">الحمل [واط]</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="load" placeholder="أدخل استطاعة الحمل بالواط" required>
+                        <span class="input-group-text"><i class="fas fa-bolt"></i></span>
+                    </div>
+                </div>
+
+                <!-- Voltage Input -->
+                <div class="mb-3">
+                    <label for="voltageInput" class="form-label">الجهد [فولط]</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="voltageInput" placeholder="أدخل الجهد بالفولط" required>
+                        <span class="input-group-text"><i class="fas fa-bolt"></i></span>
+                    </div>
+                </div>
+
+                <!-- Length Input -->
+                <div class="mb-3">
+                    <label for="length" class="form-label">طول الناقل [م]</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="length" placeholder="أدخل طول الناقل بالمتر" required>
+                        <span class="input-group-text"><i class="fas fa-ruler"></i></span>
+                    </div>
+                </div>
+
+                <!-- Allowed VD Input -->
+                <div class="mb-3">
+                    <label for="avd" class="form-label">نسبة هبوط الجهد المسموحة</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="avd" placeholder="أدخل نسبة هبوط الجهد المسموحة" required>
+                        <span class="input-group-text"><i class="fas fa-ruler"></i></span>
+                    </div>
+                </div>
+
+                <!-- Power Factor Input -->
+                <div class="mb-3">
+                    <label for="pf" class="form-label">معامل القدرة (PF)</label>
+                    <div class="input-group">
+                        <input type="number" step="0.01" class="form-control" id="pf" placeholder="أدخل معامل القدرة" required>
+                        <span class="input-group-text"><i class="fas fa-percentage"></i></span>
+                    </div>
+                </div>
+
+
+                <!-- Temperature Dropdown -->
+                <div class="mb-3">
+                    <label for="temperature" class="form-label">درجة الحرارة [°C]</label>
+                    <select class="form-select" id="temperature" required>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                        <option value="25">25</option>
+                        <option value="30">30</option>
+                        <option value="35">35</option>
+                        <option value="40">40</option>
+                        <option value="45">45</option>
+                        <option value="50">50</option>
+                        <option value="55">55</option>
+                        <option value="60">60</option>
+                        <option value="65">65 (use only XLPE & EPR)</option>
+                        <option value="70">70 (use only XLPE & EPR)</option>
+                        <option value="75">75 (use only XLPE & EPR)</option>
+                        <option value="80">80 (use only XLPE & EPR)</option>
+                    </select>
+                </div>
+
+
+                <!-- Load Type Dropdown -->
+                <div class="mb-3">
+                    <label for="loadtype" class="form-label">نوع الحمل</label>
+                    <select class="form-select" id="loadtype" required>
+                        <option value="Continuous">مستمر</option>
+                        <option value="Noncontinuous">غير مستمر</option>
+                    </select>
+                </div>
+
+                <!-- Material Dropdown -->
+                <div class="mb-3">
+                    <label for="mt" class="form-label">معدن الناقل</label>
+                    <select class="form-select" id="mt" required>
+                        <option value="Copper">نحاس</option>
+                        <option value="Aluminum">المنيوم</option>
+                    </select>
+                </div>
+
+                <!-- Circuit Type Dropdown -->
+                <div class="mb-3">
+                    <label for="circuitType" class="form-label">نوع الدائرة</label>
+                    <select class="form-select" id="circuitType" required>
+                        <option value="AC">AC</option>
+                        <option value="DC">DC</option>
+                    </select>
+                </div>
+
+                <!-- Number of Phases Dropdown -->
+                <div class="mb-3">
+                    <label for="phases" class="form-label">عدد الأطوار</label>
+                    <select class="form-select" id="phases" required>
+                        <option value="1">1 (Single-Phase)</option>
+                        <option value="3">3 (Three-Phase)</option>
+                    </select>
+                </div>
+
+                <!-- Stranding factor Dropdown -->
+                <div class="mb-3">
+                    <label for="SF" class="form-label">عامل التجديل للكابل</label>
+                    <select class="form-select" id="SF" required>
+                        <option value="Solid">مصمت</option>
+                        <option value="Stranded">مجدول</option>
+                    </select>
+                </div>
+
+                <!-- Conductor Type Dropdown -->
+                <div class="mb-3">
+                    <label for="ct" class="form-label">نوع الناقل</label>
+                    <select class="form-select" id="ct" required>
+                        <option value="Concentric round">Concentric Round Cable (كابل دائري متحد المركز)</option>
+                        <option value="Compact round">Compact Round Cable (كابل دائري مضغوط)</option>
+                    </select>
+                </div>
+
+                <!-- Spacing Dropdown -->
+                <div class="mb-3">
+                    <label for="Spacing" class="form-label">تباعد النواقل</label>
+                    <select class="form-select" id="Spacing" required>
+                        <option value="Touching">متلاصقة</option>
+                        <option value="Spaced">متباعدة (بمسافة مقطع كبل)</option>
+                    </select>
+                </div>
+
+                <!-- Conductor Material Purity Input -->
+                <div class="mb-3">
+                    <label for="mp" class="form-label">نقاوة المعدن</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="mp" placeholder="أدخل نسبة نقاوة المعدن" required>
+                        <span class="input-group-text"><i class="fas fa-ruler"></i></span>
+                    </div>
+                </div>
+
+                <!-- Number of Circuits Dropdown -->
+                <div class="mb-3">
+                    <label for="NC" class="form-label">عدد الدوائر</label>
+                    <select class="form-select" id="NC" required>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+
+                <!-- Installation Method Dropdown -->
+                <div class="mb-3">
+                    <label for="InstallatioMethod" class="form-label">تباعد النواقل</label>
+                    <select class="form-select" id="InstallatioMethod" required>
+                        <option value="Clipped">Clipped to non-metallic surface</option>
+                        <option value="Enclosed">Enclosed or clipped</option>
+                    </select>
+                </div>
+
+                <!-- Installation  Dropdown -->
+                <div class="mb-3">
+                    <label for="Installation" class="form-label">التركيب في</label>
+                    <select class="form-select" id="Installation" required>
+                        <option value="Air">الهواء</option>
+                        <option value="Ground"> الأرض</option>
+                    </select>
+                </div>
+
+                <!-- Insulation  Dropdown -->
+                <div class="mb-3">
+                    <label for="Insulation" class="form-label">نوع العزل</label>
+                    <select class="form-select" id="Insulation" required>
+                        <option value="PVC">PVC</option>
+                        <option value="XLPE">XLPE and EPR</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-grid gap-2">
+                    <button onclick="calculate()" type="button" class="btn btn-calculate btn-lg">حساب</button>
+                    <button onclick="resetForm()" type="button" class="btn btn-reset btn-lg">إعادة تعيين</button>
+                </div>
+
+
+                <!-- Result Section -->
+                <div id="voltage" class="result-card mt-4">
+                    <div class="alert alert-success text-center rounded-3 p-3">
+                        <p><span class="fw-bold">0</span> املاء كامل المدخلات واضفط "حساب" لحساب المقطع المطلوب للناقل [مم²]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const calculate = () => {
+
+
+              // Step 1: Retrieve user inputs
+            const length = document.getElementById('length').value; // Get length value
+            const load = document.getElementById('load').value; // Get load value in watts
+            const pf = document.getElementById('pf').value; // Get power factor value
+            const voltageInput = document.getElementById('voltageInput').value; // Get voltage value
+            const temperature = document.getElementById('temperature').value; // Get temperature value
+            const circuitType = document.getElementById('circuitType').value;
+            const phases = document.getElementById('phases').value; // Get number of phases
+
+            const SF = document.getElementById('SF').value; // Get Stranding Factor
+            const ct = document.getElementById('ct').value; // Get conductor type
+            const mt = document.getElementById('mt').value; // Get conductor material
+            const Spacing = document.getElementById('Spacing').value; // Get conductor material
+            const mp = document.getElementById('mp').value; // Get material purity
+            const NC = document.getElementById('NC').value; // Get Number of Circuits
+            const loadtype = document.getElementById('loadtype').value; // Get load type
+            const avd = document.getElementById('avd').value; // Get Allowed Voltage Drop
+            const im = document.getElementById('InstallatioMethod').value; // Get Installatio Method
+            const Inst = document.getElementById('Installation').value; // Get Installatio Method
+            const Insu = document.getElementById('Insulation').value; // Get Installatio Method
+
+            const Idc = load / voltageInput ; 
+            const Iac1 = load / (voltageInput * pf) ; 
+            const Iac3 = load / ((voltageInput / Math.sqrt(3)) * 3 * pf ) ; 
+
+            const lookupArrayNC = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+            const returnArray1Enclosed = ["1", "0.8", "0.7", "0.65", "0.6", "0.57", "0.54", "0.52", "0.5", "0.48"];
+            const returnArray2ClippedTouching = ["1", "0.85", "0.79", "0.75", "0.73", "0.72", "0.72", "0.71", "0.7", "0.7"];
+            const returnArray3ClippedSpaced = ["1", "0.94", "0.9", "0.9", "0.9", "0.9", "0.9", "0.9", "0.9", "0.9"];
+            const indexNC = lookupArrayNC.indexOf(NC);
+
+            const lookupArrayTemp = ["10", "15", "20", "25", "30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80"];
+            const returnArray1airpvc = ["1.22", "1.17", "1.12", "1.06", "1", "0.94", "0.87", "0.79", "0.71", "0.61", "0.5"];
+            const returnArray2airxlpe = ["1.15", "1.12", "1.08", "1.04", "1", "0.96", "0.91", "0.87", "0.82", "0.76", "0.71", "0.65", "0.58", "0.5", "0.41"];
+            const returnArray3grndpvc = ["1.1", "1.05", "1", "0.95", "0.89", "0.84", "0.77", "0.71", "0.63", "0.55", "0.45"];
+            const returnArray4grndxlpe = ["1.07", "1.04", "1", "0.96", "0.93", "0.89", "0.85", "0.8", "0.76", "0.71", "0.65", "0.6", "0.53", "0.46", "0.38"];
+            const indexTemp = lookupArrayTemp.indexOf(temperature);
+
+
+		let k1;
+            if (Inst === "Air") {
+		if (Insu === "PVC") {
+                k1 = returnArray1airpvc[indexTemp];
+            } else {
+                k1 = returnArray2airxlpe[indexTemp];
+		}
+            } else {
+                if (Insu === "PVC") {
+                k1 = returnArray3grndpvc[indexTemp];
+            } else {
+                k1 = returnArray4grndxlpe[indexTemp];
+		} }
+
+
+
+		let Cg;
+            if (im === "Clipped") {
+		if (Spacing === "Touching") {
+                Cg = returnArray2ClippedTouching[indexNC];
+            } else {
+                Cg = returnArray3ClippedSpaced[indexNC];
+		}
+            } else {
+                Cg = returnArray1Enclosed[indexNC]; }
+
+            //ks:kp
+		let ks;
+            if (ct === "Concentric round") {
+                ks = 1;
+            } else {
+                ks = 1;
+            }
+
+		let kp;
+            if (ct === "Concentric round") {
+                kp = 1;
+            } else {
+                kp = 0.6;
+            }
+
+
+            //ρ:α
+		let ρ;
+            if (mt === "Copper") {
+                ρ = 0.017241;
+            } else {
+                ρ = 0.028265;
+            }
+
+		let α;
+            if (mt === "Copper") {
+                α = 0.00393;
+            } else {
+                α = 0.00403;
+            }
+
+
+            //Fs:Fl
+		let Fs;
+            if (SF === "Solid") {
+                Fs = 1;
+            } else {
+                Fs = 1.02;
+            }
+
+		let Fl;
+            if (SF === "Solid") {
+                Fl = 1;
+            } else {
+                Fl = 1.04;
+            }
+
+
+            //Load Type: Derating Factor
+		let df;
+            if (loadtype === "Continuous") {
+                df = 1.25;
+            } else {
+                df = 1;
+            }
+          
+
+            const Ibdc = (Idc * df) / (Cg * k1); // Calculate Ib [A] for cable sizing
+            const Ibac1 = (Iac1 * df) / (Cg * k1) ; // Calculate Ib [A] for cable sizing
+            const Ibac3 = (Iac3 * df) / (Cg * k1) ; // Calculate Ib [A] for cable sizing
+
+            const Rdc = (avd * voltageInput) / Ibdc ; // Calculate Ib [A] for cable sizing DC
+            const Adc = ρ * (length / Rdc) * (1 + α * (temperature - 20)) * Fs * Fl ; // Calculate AREA [mm²] for cable sizing DC
+
+		let S;
+            if (Spacing === "Touching") {
+                S = Math.sqrt(Adc / Math.PI);
+            } else {
+                S = 2 * Math.sqrt(Adc / Math.PI);
+            }
+            const Ycs = 11 / Math.pow(Rdc / (3.28 * ks) + (13.124 / (Rdc / ks)) - (25.27 / Math.pow(Rdc/ks,2)),2)
+            const Fxp = 11 / Math.pow(Rdc / (3.28 * kp) + (13.124 / (Rdc / kp)) - (25.27 / Math.pow(Rdc/kp,2)),2)
+            const Dc = Math.sqrt(Adc / Math.PI)
+            const Ycp = Fxp * Math.pow(Dc/S,2) * (1.18 / (Fxp + 0.27) + 0.312 * Math.pow(Dc/S,2))
+            
+
+            const Rac1 = ((avd * voltageInput) / (2 * Ibac1 * pf)) * (1 + Ycs + Ycp) ;
+            const Rac3 = ((avd * voltageInput) / (Ibac3 * pf)) * (1 + Ycs + Ycp) ;
+            const Aac1 = ρ * (length / Rac1) * (1 + α * (temperature - 20)) * Fs * Fl ; // Calculate AREA [mm²] for cable sizing AC1
+            const Aac3 = ρ * (length / Rac3) * (1 + α * (temperature - 20)) * Fs * Fl ; // Calculate AREA [mm²] for cable sizing AC3
+
+		let ResultArea;
+            if (circuitType === "AC") {
+		if (phases === "1") {
+                ResultArea = Aac1;
+            } else {
+                ResultArea = Aac3;
+		}
+            } else {
+                ResultArea = Adc; }
+
+
+            // Step 3: Update the result section
+            document.getElementById('voltage').innerHTML = `
+            <div class="alert alert-success text-center rounded-3 p-3 mt-3">
+                <p><span class="fw-bold">${ResultArea}</span> المقطع المطلوب للناقل [مم²]</p> <!-- Display current -->
+
+
+   </div>
+            `;
+        }
+
+        const resetForm = () => {
+            document.getElementById('load').value = '';
+            document.getElementById('voltageInput').value = '';
+            document.getElementById('length').value = '';
+            document.getElementById('area').value = '';
+            document.getElementById('pf').value = '';
+            document.getElementById('temperature').value = '';
+            document.getElementById('mt').value = 'Copper';
+            document.getElementById('circuitType').value = 'AC';
+            document.getElementById('phases').value = '1';
+            document.getElementById('SF').value = 'Solid';
+            document.getElementById('ct').value = 'Concentric round';
+            document.getElementById('Spacing').value = 'Touching';
+            document.getElementById('voltage').innerHTML = `
+                <div class="alert alert-success text-center rounded-3 p-3">
+                    <p><span class="fw-bold">0</span> املاء كامل المدخلات واضفط "حساب" لحساب المقطع المطلوب للناقل [مم²]</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
